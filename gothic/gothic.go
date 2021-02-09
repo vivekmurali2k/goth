@@ -61,6 +61,10 @@ for the requested provider.
 
 See https://github.com/markbates/goth/examples/main.go to see this in action.
 */
+type jsonURL struct {
+	Url string `json:"url"`
+}
+
 func BeginAuthHandler(res http.ResponseWriter, req *http.Request) {
 	url, err := GetAuthURL(res, req)
 	if err != nil {
@@ -68,8 +72,9 @@ func BeginAuthHandler(res http.ResponseWriter, req *http.Request) {
 		fmt.Fprintln(res, err)
 		return
 	}
-
-	http.Redirect(res, req, url, http.StatusTemporaryRedirect)
+	js := &jsonURL{url}
+	res.Write(js)
+	// http.Redirect(res, req, url, http.StatusTemporaryRedirect)
 }
 
 // SetState sets the state string associated with the given request.
